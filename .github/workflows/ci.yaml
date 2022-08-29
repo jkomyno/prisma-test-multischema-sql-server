@@ -65,8 +65,15 @@ jobs:
       - name: prisma generate
         run: pnpm run generate
 
-      - name: \@prisma/client test
-        run: pnpm run test
+      - name: prisma validate
+        run: pnpm run validate
+
+      - name: Test \@prisma/client
+        run: pnpm run test-client
+
+      - name: Test prisma db pull
+        run: test-db:pull
+
 
   prisma-setup:
     runs-on: ${{ matrix.os }}
@@ -119,5 +126,11 @@ jobs:
       - name: prisma generate
         run: pnpm run generate
 
-      - name: \@prisma/client test
-        run: pnpm run test
+      - name: prisma validate
+        run: pnpm run validate
+
+      - name: Test \@prisma/client
+        run: pnpm run test-client
+
+      - name: Test prisma db pull
+        run: test-db:pull
