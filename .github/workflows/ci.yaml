@@ -59,14 +59,14 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Push custom SQL to database
-        run: pnpm run setup
-
       - name: prisma generate
         run: pnpm run generate
 
       - name: prisma validate
         run: pnpm run validate
+
+      - name: Push custom SQL to database
+        run: pnpm run setup
 
       - name: Test \@prisma/client
         run: pnpm run test-client
@@ -120,14 +120,14 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: prisma db push
-        run: pnpm run db:push
-
       - name: prisma generate
         run: pnpm run generate
 
       - name: prisma validate
         run: pnpm run validate
+
+      - name: prisma db push
+        run: pnpm run db:push
 
       - name: Test \@prisma/client
         run: pnpm run test-client
