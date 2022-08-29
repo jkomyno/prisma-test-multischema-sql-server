@@ -3,6 +3,8 @@ import execa from 'execa'
 import assert from 'node:assert'
 
 describe('db pull', () => {
+  console.log('process.env.DATABASE_URL', process.env.DATABASE_URL)
+
   test('vanilla', async () => {
     try {
       await execa('prisma', ['db', 'pull', '--print', `--url="${process.env.DATABASE_URL}"`])
