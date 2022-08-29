@@ -56,5 +56,11 @@ describe('client', () => {
       { id: 2, order: { id: 201, user_id: 2 } },
       { id: 3, order: null }
     ])
+
+    const usersRaw = await prisma.$queryRaw`SELECT id FROM [base].[User] ORDER BY id ASC`
+    assert.deepEqual(usersRaw, [ { id: 1 }, { id: 2 }, { id: 3 } ])
+
+    const ordersRaw = await prisma.$queryRaw`SELECT id, user_id FROM [transactional].[Order] ORDER BY id ASC`
+    assert.deepEqual(ordersRaw, [ { id: 101, user_id: 1 }, { id: 201, user_id: 2 } ])
   })
 })
