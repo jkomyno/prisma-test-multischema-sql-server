@@ -1,0 +1,121 @@
+name: CI workflow
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '*.md'
+      - 'LICENSE'
+      - '.dockerignore'
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  manual-setup:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: ['18.8.0']
+
+    name: "Build ${{ matrix.os }}: Node.js ${{ matrix.node }}"
+
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DATABASE_SETUP_URL: "sqlserver://localhost:1433;database=master;user id=SA;password=Pr1sm4_Pr1sm4;trustServerCertificate=true;encrypt=true"
+      DATABASE_URL: "sqlserver://localhost:1433;database=reprod;user id=SA;password=Pr1sm4_Pr1sm4;trustServerCertificate=true;encrypt=true"
+
+    steps:
+      - name: Prepare git
+        run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@v3
+
+      - name: Run docker/docker-compose.azure.yml
+        if: matrix.os == 'ubuntu-latest'
+        run: docker-compose -f docker/docker-compose.azure.yml up -d
+
+      - name: Run docker/docker-compose.yml
+        if: matrix.os == 'windows-latest'
+        run: docker-compose -f docker/docker-compose.yml up -d
+
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          run_install: false
+          version: 7
+
+      - name: User Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Setup SQL
+        run: pnpm run setup
+
+      - name: prisma generate
+        run: pnpm run generate
+
+      - name: @prisma/client test
+        run: pnpm run test
+
+  prisma-setup:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: ['18.8.0']
+
+    name: "Build ${{ matrix.os }}: Node.js ${{ matrix.node }}"
+
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DATABASE_SETUP_URL: "sqlserver://localhost:1433;database=master;user id=SA;password=Pr1sm4_Pr1sm4;trustServerCertificate=true;encrypt=true"
+      DATABASE_URL: "sqlserver://localhost:1433;database=reprod;user id=SA;password=Pr1sm4_Pr1sm4;trustServerCertificate=true;encrypt=true"
+
+    steps:
+      - name: Prepare git
+        run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@v3
+
+      - name: Run docker/docker-compose.azure.yml
+        if: matrix.os == 'ubuntu-latest'
+        run: docker-compose -f docker/docker-compose.azure.yml up -d
+
+      - name: Run docker/docker-compose.yml
+        if: matrix.os == 'windows-latest'
+        run: docker-compose -f docker/docker-compose.yml up -d
+
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          run_install: false
+          version: 7
+
+      - name: User Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Setup SQL via prisma
+        run: pnpm run db:push
+
+      - name: prisma generate
+        run: pnpm run generate
+
+      - name: @prisma/client test
+        run: pnpm run test
