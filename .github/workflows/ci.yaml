@@ -64,7 +64,7 @@ jobs:
       - name: prisma generate
         run: pnpm run generate
 
-      - name: @prisma/client test
+      - name: \@prisma/client test
         run: pnpm run test
 
   prisma-setup:
@@ -117,5 +117,5 @@ jobs:
       - name: prisma generate
         run: pnpm run generate
 
-      - name: @prisma/client test
+      - name: \@prisma/client test
         run: pnpm run test
