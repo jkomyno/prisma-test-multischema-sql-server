@@ -83,7 +83,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node: ['18.8.0']
-        azure: [true, false]
+        azure: ['true', 'false']
 
     name: "Prisma Setup: ${{ matrix.os }}: Node.js ${{ matrix.node }}"
 
