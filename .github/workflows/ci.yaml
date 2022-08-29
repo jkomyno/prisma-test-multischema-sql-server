@@ -72,7 +72,7 @@ jobs:
         run: pnpm run test-client
 
       - name: Test prisma db pull
-        run: test-db:pull
+        run: pnpm run test-db:pull
 
 
   prisma-setup:
@@ -133,4 +133,4 @@ jobs:
         run: pnpm run test-client
 
       - name: Test prisma db pull
-        run: test-db:pull
+        run: pnpm run test-db:pull
