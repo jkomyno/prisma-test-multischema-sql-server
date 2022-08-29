@@ -10,17 +10,16 @@ datasource pg {
 }
 
 model User {
-	id Int @id
-  
-	order Order?
+  id Int @id
+  order Order?
 
   @@schema("base")
 }
 
 model Order {
-	id      Int  @id
-	user_id Int  @unique
-	user    User @relation(fields: [user_id], references: [id])
+  id      Int  @id
+  user_id Int  @unique
+  user    User @relation(fields: [user_id], references: [id])
 
   @@schema("transactional")
 }
